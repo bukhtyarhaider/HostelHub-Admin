@@ -1,0 +1,83 @@
+@import "../../mixins";
+.allWardensContainer {
+  padding: 20px;
+  background-color: #f0f2f5;
+
+  .searchSection {
+    @include flex(row, space-between, center);
+
+    .heading {
+      font-size: 20px;
+      font-weight: 500;
+      line-height: 30px;
+      color: #383e49;
+    }
+
+    .searchInput {
+      border: 1px solid #d0d5dd;
+      padding: 10px 16px;
+      gap: 8px;
+      border-radius: 4px;
+      width: 320px;
+    }
+  }
+
+  .tabsSection {
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+
+  .searchSection {
+    margin-bottom: 20px;
+  }
+
+  .tableSection {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.actions {
+  @include flex(row, center, center);
+  gap: 20px;
+
+  button {
+    color: var(--pale-blue);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+  }
+
+  img {
+    cursor: pointer;
+    height: 24px;
+    width: 24px;
+  }
+}
+
+.tableContainer {
+  width: 100%;
+  overflow: auto;
+}
+
+@media screen and (max-width: 767px) {
+  .allWardensContainer {
+    padding: 20px;
+    background-color: #f0f2f5;
+  
+    .searchSection {
+      .searchInput {
+        border: 1px solid #d0d5dd;
+        padding: 10px 16px;
+        gap: 8px;
+        border-radius: 4px;
+        width: 200px;
+      }
+    }
+  }
+}

@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Italianno&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Italianno&display=swap");
 @import "./mixins";
 
 * {
@@ -103,10 +103,15 @@ body {
   color: var(--primary-text);
   background-color: var(--grey-background);
   position: relative;
+  @include flex(row, start, start);
+
+  .main-content {
+    width: 100%;
+  }
 }
 
 .ant-drawer .ant-drawer-content {
-  background: #003b95 !important;
+  // background: #003b95 !important;
 
   button {
     background-color: white;
@@ -126,8 +131,6 @@ body {
 .ant-drawer-close {
   position: absolute;
   right: 10px;
-  color: white !important;
-  background-color: transparent !important;
 
   .anticon {
     color: var(--red) !important;
@@ -164,4 +167,125 @@ body {
 .ant-select-single,
 .ant-picker-outlined {
   height: 46px !important;
+}
+
+.ant-tabs-tab {
+  padding-inline: 10px !important;
+}
+
+.ant-tabs-tab-active {
+  background-color: #003b95 !important;
+
+  border-radius: 8px !important;
+}
+
+.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: white !important;
+}
+
+.ant-modal-title {
+  text-align: center !important;
+  font-size: 22px !important;
+  font-weight: 600 !important;
+  line-height: 30px !important;
+}
+
+.ant-tabs .ant-tabs-content-holder {
+  background-color: white !important;
+}
+
+/* Hide the ink bar in Ant Design Tabs */
+.ant-tabs-ink-bar {
+  display: none !important;
+}
+
+// Card used in antd modals
+
+.modalContent {
+  .modalDescription {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    text-align: center;
+    color: #667085;
+    padding: 20px 0;
+  }
+  .cardsContainer {
+    overflow: auto;
+    max-height: 400px;
+    .card {
+      border: 1px solid #f0f1f3;
+      border-radius: 6px;
+      padding: 30px;
+      margin-top: 40px;
+
+      .cardTitle {
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 26px;
+        padding-bottom: 30px;
+      }
+
+      .detail {
+        @include flex(row, space-between, center);
+        padding-bottom: 10px;
+
+        h5 {
+          font-size: 16px;
+          font-weight: 600;
+          line-height: 26px;
+        }
+
+        p {
+          font-size: 14px;
+          font-weight: 400;
+          line-height: 21px;
+        }
+      }
+    }
+  }
+}
+
+.buttonsGroup {
+  margin-top: 20px;
+  @include flex(row, center, center);
+  gap: 20px;
+}
+
+.danger,
+.success,
+.primary,
+.info {
+  padding: 10px 16px;
+  border-radius: 4px;
+  min-width: 100px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.primary {
+  border: 1px solid #f0f1f3;
+  color: #858d9d;
+}
+
+.info {
+  background-color: #003b95;
+  color: #ffffff;
+}
+
+.success {
+  background-color: #01ab31;
+  color: #ffffff;
+}
+
+.danger {
+  background-color: #ed2034;
+  color: #ffffff;
+}
+
+.error {
+  color: var(--red);
+  font-size: 12px;
+  padding-top: 5px;
 }

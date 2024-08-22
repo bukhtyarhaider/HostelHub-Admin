@@ -1,0 +1,108 @@
+@import "../../mixins";
+.wardenDetailsContainer {
+  padding: 20px;
+  margin: 20px;
+  border-radius: 8px;
+  background: #ffffff;
+  width: 80vw;
+
+  .title {
+    font-weight: 700;
+    line-height: 30px;
+    color: #000000;
+    text-align: center;
+    padding-bottom: 50px;
+    font-size: 20px;
+  }
+  .card {
+    border: 1px solid #f0f1f3;
+    border-radius: 6px;
+    padding: 30px;
+    margin-bottom: 40px;
+
+    .cardTitle {
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 26px;
+      padding-bottom: 30px;
+    }
+
+    .detail {
+      @include flex(row, space-between, center);
+      padding-bottom: 10px;
+
+      h5 {
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 26px;
+      }
+
+      p {
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 21px;
+      }
+    }
+  }
+
+  .imagesContainer {
+    .imagesTitle {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 26px;
+      padding-bottom: 30px;
+      padding-top: 30px;
+      text-align: center
+    }
+
+    .imagesGroup {
+      @include flex(row, center, center);
+      gap: 20px;
+      flex-wrap: wrap;
+
+      img {
+        max-width: 230px;
+      }
+    }
+  }
+
+  .description {
+    border: 1px solid #d8dfe0;
+    border-radius: 5px;
+    padding: 20px 30px;
+    margin: 30px 0;
+    color: #002f34;
+
+    h2 {
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 26px;
+      padding-bottom: 20px;
+    }
+
+    p {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 21px;
+      padding-bottom: 20px;
+    }
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .wardenDetailsContainer {
+    width: 90vw;
+
+    .imagesContainer {
+     
+      .imagesGroup {
+       
+        img {
+          width: 100px;
+          max-width: 100% !important;
+        }
+      }
+    }
+  
+  }
+}

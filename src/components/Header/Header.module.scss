@@ -1,0 +1,92 @@
+@import "../../mixins";
+
+.headerContainer {
+  @include flex(row, space-between, center);
+  background-color: white;
+  padding-inline: 40px;
+  height: 100px;
+
+  .profile {
+    @include flex(row, center, center);
+    gap: 10px;
+    img {
+      width: 32px;
+      height: 32px;
+    }
+
+    h6 {
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 24px;
+    }
+  }
+
+  .leftSide {
+    @media (max-width: 767px) {
+      display: none;
+    }
+  }
+
+  .menuIcon {
+    display: none;
+    font-size: 24px;
+    cursor: pointer;
+
+    @media (max-width: 767px) {
+      display: block; // Show on mobile devices
+    }
+  }
+}
+
+.logoImg {
+  padding-top: 8px;
+  width: 100px !important;
+}
+
+nav {
+  width: 100%;
+  padding: 0px;
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    @include flex(column, flex-start, center);
+    width: 100%;
+  }
+
+  li {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  a,
+  .logoutButton {
+    text-decoration: none;
+    color: #333 !important;
+    font-weight: 500;
+    font-size: 16px;
+    padding: 10px 15px;
+    display: block;
+    width: 100%;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+
+    @include flex(row, start, center);
+    gap: 10px;
+
+    &.active {
+      background-color: #003b95 !important;
+      color: #fff !important;
+
+      svg {
+        path {
+          stroke: #fff;
+        }
+      }
+    }
+
+    &:hover {
+      background-color: #e0e0e0;
+    }
+  }
+}

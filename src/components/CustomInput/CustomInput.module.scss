@@ -1,0 +1,50 @@
+@import "../../mixins";
+
+.customInputContainer {
+  @include flex(column, center, start);
+
+  label {
+    font-size: 14px;
+    font-weight: 500;
+    padding: 5px 0;
+  }
+
+  input {
+    height: 46px;
+    min-width: 400px;
+    padding: 10px 16px;
+    border-radius: 4px;
+    border: 0.5px solid #858d9d;
+    background-color: var(--background);
+    font-size: 14px;
+    font-weight: 400;
+    width: 100%; // Ensure the input takes full width within its container
+  }
+
+  @media (max-width: 768px) {
+    input {
+      min-width: 300px; // Adjust minimum width for tablets
+    }
+  }
+
+  @media (max-width: 480px) {
+    input {
+      min-width: 100%; // Adjust minimum width for mobile devices
+    }
+
+    label {
+      font-size: 12px; // Adjust label font size for smaller screens
+    }
+
+    input {
+      font-size: 12px; // Adjust input font size for smaller screens
+    }
+  }
+}
+
+.isDisabled {
+  input {
+    cursor: not-allowed;
+    background-color: #f0f1f3;
+  }
+}
