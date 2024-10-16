@@ -1,12 +1,14 @@
 @import "../../mixins";
 
 .sidebar {
-  width: 280px;
+  width: 270px;
   background-color: white;
   @include flex(column, start, center);
   padding: 20px;
   height: 100vh;
   border-right: 1px solid #f0f1f3;
+  position: fixed;
+  z-index: 2; 
 
   @media (max-width: 767px) {
     display: none; // Hide the sidebar on mobile devices
