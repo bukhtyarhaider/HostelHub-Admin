@@ -1,8 +1,10 @@
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
+  onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
+  User,
   UserCredential,
 } from "firebase/auth";
 
@@ -44,4 +46,8 @@ export const signOutUser = async () => {
   } catch (error: any) {
     throw new Error(error.message);
   }
+};
+
+export const observeAuthState = (callback: (user: User | null) => void) => {
+  return onAuthStateChanged(auth, callback);
 };
