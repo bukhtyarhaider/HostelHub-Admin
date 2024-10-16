@@ -3,17 +3,21 @@ import { Select } from "antd";
 import styles from "./ProfileInfo.module.scss";
 import { avatar, cameraIcon } from "../../../assets";
 import CustomInput from "../../../components/CustomInput/CustomInput";
+import { ProfileInfoProps } from "./ProfileInfoProps";
+import { Loader } from "../../../components/Loader/Loader";
+import { _updateProfile, uploadImage } from "../../../services/firebase";
 
 const { Option } = Select;
 
-const ProfileInfo = ({ userData, setUserData }) => {
+const ProfileInfo: React.FC<ProfileInfoProps> = ({ userData, setUserData }) => {
   const [errors, setErrors] = useState<any>({});
+  const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
-    // Remove error for the specific field
-    setErrors((prevErrors) => ({
+    setErrors((prevErrors: { [key: string]: string }) => ({
       ...prevErrors,
       [name]: "",
     }));
@@ -22,8 +26,7 @@ const ProfileInfo = ({ userData, setUserData }) => {
   };
 
   const handleSelectChange = (name: string, value: string) => {
-    // Remove error for the specific field
-    setErrors((prevErrors) => ({
+    setErrors((prevErrors: { [key: string]: any }) => ({
       ...prevErrors,
       [name]: "",
     }));
@@ -34,41 +37,74 @@ const ProfileInfo = ({ userData, setUserData }) => {
   const validate = () => {
     const newErrors: any = {};
 
-    if (!userData.fullName) {
+    if (!userData?.fullName) {
       newErrors.fullName = "Full Name is required";
     }
 
-    if (!userData.email) {
+    if (!userData?.email) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(userData.email)) {
       newErrors.email = "Email is invalid";
     }
 
-    if (!userData.phoneNumber) {
+    if (!userData?.phoneNumber) {
       newErrors.phoneNumber = "Contact Number is required";
     } else if (!/^\+?\d{10,13}$/.test(userData.phoneNumber)) {
       newErrors.phoneNumber = "Contact Number is invalid";
     }
 
-    if (!userData.currentAddress) {
-      newErrors.currentAddress = "Current Address is required";
+    if (!userData?.address) {
+      newErrors.address = "Current Address is required";
     }
 
-    if (!userData.currentState) {
-      newErrors.currentState = "Current State is required";
+    if (!userData?.state) {
+      newErrors.state = "Current State is required";
     }
 
     return newErrors;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const onImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setProfileImage(e.target.files[0]);
+    }
+  };
+
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
     } else {
-      // Handle successful form submission here
-      console.log("Form submitted successfully", userData);
+      setIsLoading(true);
+      try {
+        let profileImageUrl = "";
+
+        if (profileImage) {
+          profileImageUrl = await uploadImage(
+            profileImage,
+            `profilePictures/${userData.email}`
+          );
+        } else {
+          profileImageUrl = userData?.photoURL ?? "";
+        }
+
+        await _updateProfile({
+          fullName: userData.fullName ?? "",
+          phoneNumber: userData.phoneNumber ?? "",
+          address: userData.address ?? "",
+          state: userData.state ?? "",
+          photoURL: profileImageUrl,
+        });
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          alert(`Failed to update profile: ${error.message}`);
+        } else {
+          alert("Failed to update profile due to an unknown error.");
+        }
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -77,9 +113,32 @@ const ProfileInfo = ({ userData, setUserData }) => {
       <h2 className={styles.heading}>User Profile</h2>
 
       <div className={styles.profilePictureContainer}>
-        <img src={avatar} alt="Profile" className={styles.profilePicture} />
+        <img
+          src={
+            profileImage
+              ? URL.createObjectURL(profileImage)
+              : userData.photoURL
+              ? userData.photoURL
+              : avatar
+          }
+          alt="Profile"
+          className={styles.profilePicture}
+        />
         <div className={styles.cameraIcon}>
-          <img src={cameraIcon} alt="Camera Icon" />
+          <label htmlFor="profileImage">
+            <img
+              src={cameraIcon}
+              alt="Camera Icon"
+              style={{ cursor: "pointer" }}
+            />
+          </label>
+          <input
+            id="profileImage"
+            type="file"
+            accept="image/*"
+            style={{ display: "none" }}
+            onChange={onImageChange}
+          />
         </div>
       </div>
 
@@ -93,7 +152,7 @@ const ProfileInfo = ({ userData, setUserData }) => {
               type="text"
               name="fullName"
               placeholder="Full Name"
-              value={userData.fullName}
+              value={userData?.fullName ?? ""}
               onChange={handleChange}
             />
             {errors.fullName && <div className="error">{errors.fullName}</div>}
@@ -107,7 +166,7 @@ const ProfileInfo = ({ userData, setUserData }) => {
               type="email"
               name="email"
               placeholder="Email"
-              value={userData.email}
+              value={userData?.email ?? ""}
               onChange={handleChange}
             />
             {errors.email && <div className="error">{errors.email}</div>}
@@ -121,7 +180,7 @@ const ProfileInfo = ({ userData, setUserData }) => {
               type="text"
               name="phoneNumber"
               placeholder="Contact Number"
-              value={userData.phoneNumber}
+              value={userData?.phoneNumber ?? ""}
               onChange={handleChange}
             />
             {errors.phoneNumber && (
@@ -135,14 +194,12 @@ const ProfileInfo = ({ userData, setUserData }) => {
           <div className={styles.input}>
             <CustomInput
               type="text"
-              name="currentAddress"
+              name="address"
               placeholder="Current Address"
-              value={userData.currentAddress}
+              value={userData?.address ?? ""}
               onChange={handleChange}
             />
-            {errors.currentAddress && (
-              <div className="error">{errors.currentAddress}</div>
-            )}
+            {errors.address && <div className="error">{errors.address}</div>}
           </div>
         </div>
 
@@ -150,30 +207,26 @@ const ProfileInfo = ({ userData, setUserData }) => {
           <label>Current State</label>
           <div className={styles.input}>
             <Select
-              value={userData.currentState}
+              value={userData?.state}
               style={{ width: "100%" }}
-              onChange={(value) => handleSelectChange("currentState", value)}
+              onChange={(value) => handleSelectChange("state", value)}
             >
               <Option value="Punjab">Punjab</Option>
               <Option value="Sindh">Sindh</Option>
               <Option value="Khyber Pakhtunkhwa">Khyber Pakhtunkhwa</Option>
               <Option value="Balochistan">Balochistan</Option>
             </Select>
-            {errors.currentState && (
-              <div className="error">{errors.currentState}</div>
-            )}
+            {errors.state && <div className="error">{errors.state}</div>}
           </div>
         </div>
 
         <div className={styles.buttonContainer}>
-          <button type="button" className={styles.backButton}>
-            Back
-          </button>
           <button type="submit" className={styles.saveButton}>
             Save Changes
           </button>
         </div>
       </form>
+      {<Loader hide={!isLoading} />}
     </div>
   );
 };
