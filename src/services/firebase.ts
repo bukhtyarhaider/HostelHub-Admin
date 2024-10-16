@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import {
   getAuth,
   signInWithEmailAndPassword,
+  signOut,
   UserCredential,
 } from "firebase/auth";
 
@@ -34,5 +35,13 @@ export const signIn = async (
     } else {
       throw new Error("An unknown error occurred during sign-in.");
     }
+  }
+};
+
+export const signOutUser = async () => {
+  try {
+    await signOut(auth);
+  } catch (error: any) {
+    throw new Error(error.message);
   }
 };

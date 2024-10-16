@@ -3,13 +3,13 @@ import { adminDetails } from "../../content";
 import { MenuOutlined } from "@ant-design/icons"; // Import the Menu icon
 import { useState } from "react";
 import { Drawer, Modal } from "antd";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import styles from "./Header.module.scss";
 import { home, logo, logoutIcon, profileIcon, wardensIcon } from "../../assets";
 import { ReactSVG } from "react-svg";
+import { signOutUser } from "../../services/firebase";
 
 const Header = () => {
-  const navigate = useNavigate();
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -17,13 +17,17 @@ const Header = () => {
     setIsModalVisible(!isModalVisible);
   };
 
-  const handleOk = () => {
-    // Clear authToken from localStorage
-    localStorage.removeItem("authToken");
-
-    // Close the modal and navigate to the login page
-    setIsModalVisible(false);
-    navigate("/login");
+  const signOut = async () => {
+    try {
+      await signOutUser();
+      setIsModalVisible(false);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("Error signing out:", error.message);
+      } else {
+        console.error("An unexpected error occurred:", error);
+      }
+    }
   };
 
   const toggleDrawer = () => {
@@ -112,7 +116,7 @@ const Header = () => {
             <button onClick={toggleModal} className="primary">
               Cancel
             </button>
-            <button onClick={handleOk} className="info">
+            <button onClick={signOut} className="info">
               Yes, I'm sure
             </button>
           </div>
