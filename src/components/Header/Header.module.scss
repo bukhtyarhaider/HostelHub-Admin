@@ -5,6 +5,12 @@
   background-color: white;
   padding-inline: 40px;
   height: 100px;
+  position: fixed;
+  top: 0; 
+  left: 0; 
+  right: 0; 
+  z-index: 1; 
+  width: 100%; 
 
   .profile {
     @include flex(row, center, center);

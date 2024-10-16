@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("warden");
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -57,25 +56,6 @@ const Login = () => {
       <div className={styles.loginBox}>
         <h2 className={styles.heading}>Welcome To The Portal</h2>
         <p className={styles.subHeading}>Please login using your details.</p>
-
-        <div className={styles.switchButtons}>
-          <button
-            className={`${styles.switchButton} ${
-              activeTab === "warden" ? styles.active : ""
-            }`}
-            onClick={() => setActiveTab("warden")}
-          >
-            SIGN IN AS WARDEN
-          </button>
-          <button
-            className={`${styles.switchButton} ${
-              activeTab === "admin" ? styles.active : ""
-            }`}
-            onClick={() => setActiveTab("admin")}
-          >
-            SIGN IN AS ADMIN
-          </button>
-        </div>
 
         <form onSubmit={handleSubmit}>
           <div className={styles.inputContainer}>

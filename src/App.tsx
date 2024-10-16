@@ -13,33 +13,40 @@ function App() {
       {location.pathname !== "/login" && location.pathname !== "/register" && (
         <Sidebar />
       )}
-
-      <div className="main-content">
+      <div className="main-content-container">
         {location.pathname !== "/login" &&
           location.pathname !== "/register" && <Header />}
-        <Routes>
-          {routes.map((route) => (
+        <div
+          className={
+            location.pathname !== "/login" && location.pathname !== "/register"
+              ? "main-content"
+              : ""
+          }
+        >
+          <Routes>
+            {routes.map((route) => (
+              <Route
+                key={route.path}
+                path={route.path}
+                element={
+                  route.path === "/login" ? (
+                    <route.element />
+                  ) : (
+                    <PrivateRoute element={route.element} />
+                  )
+                }
+              />
+            ))}
             <Route
-              key={route.path}
-              path={route.path}
+              path="*"
               element={
-                route.path === "/login" ? (
-                  <route.element />
-                ) : (
-                  <PrivateRoute element={route.element} />
-                )
+                <PrivateRoute
+                  element={routes.find((route) => route.path === "/")?.element}
+                />
               }
             />
-          ))}
-          <Route
-            path="*"
-            element={
-              <PrivateRoute
-                element={routes.find((route) => route.path === "/")?.element}
-              />
-            }
-          />
-        </Routes>
+          </Routes>
+        </div>
       </div>
     </div>
   );
