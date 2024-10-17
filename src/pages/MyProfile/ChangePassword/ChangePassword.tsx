@@ -1,52 +1,84 @@
 import React, { useState } from "react";
 import styles from "./ChangePassword.module.scss";
 import CustomInput from "../../../components/CustomInput/CustomInput";
+import { _updatePassword } from "../../../services/firebase";
+import { Loader } from "../../../components/Loader/Loader";
+import { message } from "antd";
 
-const ChangePassword = ({ userData, setUserData }) => {
-  const [errors, setErrors] = useState<any>({});
+interface PasswordData {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
+const ChangePassword: React.FC = () => {
+  const [passwordData, setPasswordData] = useState<PasswordData>({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
-    // Remove error for the specific field being changed
     setErrors((prevErrors) => ({
       ...prevErrors,
       [name]: "",
     }));
 
-    setUserData({ ...userData, [name]: value });
+    setPasswordData((prevPasswordData) => ({
+      ...prevPasswordData,
+      [name]: value,
+    }));
   };
 
   const validate = () => {
-    const newErrors: any = {};
+    const newErrors: { [key: string]: string } = {};
 
-    if (!userData.currentPassword) {
+    if (!passwordData.currentPassword) {
       newErrors.currentPassword = "Current password is required";
     }
 
-    if (!userData.newPassword) {
+    if (!passwordData.newPassword) {
       newErrors.newPassword = "New password is required";
-    } else if (userData.newPassword.length < 8) {
+    } else if (passwordData.newPassword.length < 8) {
       newErrors.newPassword = "Password must be at least 8 characters long";
     }
 
-    if (!userData.confirmPassword) {
+    if (!passwordData.confirmPassword) {
       newErrors.confirmPassword = "Please confirm your new password";
-    } else if (userData.confirmPassword !== userData.newPassword) {
+    } else if (passwordData.confirmPassword !== passwordData.newPassword) {
       newErrors.confirmPassword = "Passwords do not match";
     }
 
     return newErrors;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
     } else {
-      // Handle successful form submission here
-      console.log("Form submitted successfully", userData);
+      try {
+        setIsLoading(true);
+        await _updatePassword(passwordData.newPassword).catch();
+        message.success("Password Updatted!");
+      } catch (error: any) {
+        setErrors({ firebaseError: error.message, ...errors });
+        message.error(`${error.message}`);
+        throw new Error(error.message);
+      } finally {
+        setIsLoading(false);
+      }
+      setPasswordData({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
     }
   };
 
@@ -61,10 +93,10 @@ const ChangePassword = ({ userData, setUserData }) => {
           <label>Current Password</label>
           <div className={styles.input}>
             <CustomInput
-              type="text"
+              type="password"
               name="currentPassword"
               placeholder="Enter current password"
-              value={userData.currentPassword}
+              value={passwordData.currentPassword}
               onChange={handleChange}
             />
             {errors.currentPassword && (
@@ -80,7 +112,7 @@ const ChangePassword = ({ userData, setUserData }) => {
               type="password"
               name="newPassword"
               placeholder="Enter new password"
-              value={userData.newPassword}
+              value={passwordData.newPassword}
               onChange={handleChange}
             />
             {errors.newPassword && (
@@ -96,7 +128,7 @@ const ChangePassword = ({ userData, setUserData }) => {
               type="password"
               name="confirmPassword"
               placeholder="Confirm new password"
-              value={userData.confirmPassword}
+              value={passwordData.confirmPassword}
               onChange={handleChange}
             />
             {errors.confirmPassword && (
@@ -106,14 +138,12 @@ const ChangePassword = ({ userData, setUserData }) => {
         </div>
 
         <div className={styles.buttonContainer}>
-          <button type="button" className={styles.backButton}>
-            Back
-          </button>
           <button type="submit" className={styles.saveButton}>
             Save Changes
           </button>
         </div>
       </form>
+      <Loader hide={!isLoading} />
     </div>
   );
 };
