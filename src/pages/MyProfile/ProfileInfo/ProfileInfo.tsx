@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Select } from "antd";
+import { message, Select } from "antd";
 import styles from "./ProfileInfo.module.scss";
 import { avatar, cameraIcon } from "../../../assets";
 import CustomInput from "../../../components/CustomInput/CustomInput";
@@ -96,11 +96,13 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({ userData, setUserData }) => {
           state: userData.state ?? "",
           photoURL: profileImageUrl,
         });
+
+        message.success("Profile Updatted!");
       } catch (error: unknown) {
         if (error instanceof Error) {
-          alert(`Failed to update profile: ${error.message}`);
+          message.error(`Failed to update profile: ${error.message}`);
         } else {
-          alert("Failed to update profile due to an unknown error.");
+          message.error("Failed to update profile due to an unknown error.");
         }
       } finally {
         setIsLoading(false);
