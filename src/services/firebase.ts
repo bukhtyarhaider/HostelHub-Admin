@@ -4,6 +4,7 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
+  updatePassword,
   updateProfile,
   User,
   UserCredential,
@@ -126,6 +127,23 @@ export const getProfile = async (): Promise<UserProfile> => {
       };
     } else {
       throw new Error("User data not found.");
+    }
+  } else {
+    throw new Error("No user is currently signed in.");
+  }
+};
+
+export const _updatePassword = async (newPassword: string) => {
+  const user = auth.currentUser;
+  if (user) {
+    try {
+      await updatePassword(user, newPassword);
+    } catch (error: any) {
+      if (error.code === "auth/requires-recent-login") {
+        throw new Error("Please re-authenticate to update your password.");
+      } else {
+        throw new Error(error.message);
+      }
     }
   } else {
     throw new Error("No user is currently signed in.");
