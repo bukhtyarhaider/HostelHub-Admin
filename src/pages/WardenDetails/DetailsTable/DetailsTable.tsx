@@ -1,12 +1,13 @@
 import styles from "./DetailsTable.module.scss";
 import { Table } from "antd";
 import type { TableColumnsType } from "antd";
-import { DataType } from "./DetailsTableProps";
+import { Room } from "../../../types/types";
+import { DetailsTableProps } from "./DetailsTableProps";
 
-const DetailsTable = ({ tableData }) => {
-  const columns: TableColumnsType<DataType> = [
+const DetailsTable: React.FC<DetailsTableProps> = ({ tableData }) => {
+  const columns: TableColumnsType<Room> = [
     { title: "Room Number", dataIndex: "roomNumber", key: "roomNumber" },
-    { title: "Room Type", dataIndex: "roomType", key: "roomType" },
+    { title: "Room Type", dataIndex: "type", key: "type" },
     { title: "Number of Beds", dataIndex: "numberOfBeds", key: "numberOfBeds" },
     { title: "Washroom", dataIndex: "washroom", key: "washroom" },
     {
@@ -16,8 +17,8 @@ const DetailsTable = ({ tableData }) => {
     },
     {
       title: "Room Price/Seat",
-      dataIndex: "roomPricePerSeat",
-      key: "roomPricePerSeat",
+      dataIndex: "price",
+      key: "price",
     },
   ];
 
