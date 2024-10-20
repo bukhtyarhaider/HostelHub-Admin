@@ -9,8 +9,16 @@ import {
   User,
   UserCredential,
 } from "firebase/auth";
-import { doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
-import { UpdateProfileParams, UserProfile } from "../types/types";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  getFirestore,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
+import { UpdateProfileParams, UserProfile, Warden } from "../types/types";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
 const firebaseConfig = {
@@ -147,5 +155,47 @@ export const _updatePassword = async (newPassword: string) => {
     }
   } else {
     throw new Error("No user is currently signed in.");
+  }
+};
+
+export const getWardens = async (): Promise<Warden[]> => {
+  try {
+    const wardenCollectionRef = collection(db, "warden");
+    const snapshot = await getDocs(wardenCollectionRef);
+
+    const wardenRecords: any[] = [];
+    snapshot.forEach((doc) => {
+      wardenRecords.push({ id: doc.id, ...doc.data() });
+    });
+
+    return wardenRecords;
+  } catch (error) {
+    throw new Error(
+      "Failed to fetch warden records: " +
+        (error instanceof Error
+          ? error.message
+          : "An unexpected error occurred")
+    );
+  }
+};
+
+export const updateWardenStatus = async (
+  docId: string,
+  newStatus: string
+): Promise<string> => {
+  try {
+    const wardenDocRef = doc(db, "warden", docId);
+    await updateDoc(wardenDocRef, {
+      status: newStatus,
+    });
+
+    return "Warden status updated successfully.";
+  } catch (error) {
+    throw new Error(
+      "Failed to update warden status: " +
+        (error instanceof Error
+          ? error.message
+          : "An unexpected error occurred")
+    );
   }
 };

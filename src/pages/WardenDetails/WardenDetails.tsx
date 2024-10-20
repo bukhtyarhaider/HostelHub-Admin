@@ -1,15 +1,10 @@
 import { useLocation } from "react-router-dom";
 import styles from "./WardenDetails.module.scss";
 import DetailsTable from "./DetailsTable/DetailsTable";
-import {
-  hostelDetailsDescriptionData,
-  hostelDetailsTableData,
-} from "../../content";
-import { bedroom } from "../../assets";
 
 const WardenDetails = () => {
   const location = useLocation();
-  const { warden } = location.state || {}; // Destructure the warden data
+  const { warden } = location.state || {};
 
   return (
     <div className={styles.wardenDetailsContainer}>
@@ -17,16 +12,16 @@ const WardenDetails = () => {
       <div className={styles.card}>
         <h4 className={styles.cardTitle}>Personal Information</h4>
         <div className={styles.detail}>
-          <h5>Full Name::</h5>
-          <p>{warden?.wardenName}</p>
+          <h5>Full Name:</h5>
+          <p>{warden?.fullName ?? ""}</p>
         </div>
         <div className={styles.detail}>
           <h5>Email:</h5>
-          <p>{warden?.email}</p>
+          <p>{warden?.email ?? ""}</p>
         </div>
         <div className={styles.detail}>
           <h5>Phone Number:</h5>
-          <p>{warden?.phoneNumber}</p>
+          <p>{warden?.phoneNumber ?? ""}</p>
         </div>
       </div>
 
@@ -34,40 +29,41 @@ const WardenDetails = () => {
         <h4 className={styles.cardTitle}>Hostel Information</h4>
         <div className={styles.detail}>
           <h5>Name:</h5>
-          <p>{warden?.hostelName}</p>
+          <p>{warden?.hostel?.name ?? ""}</p>
         </div>
         <div className={styles.detail}>
           <h5>Location:</h5>
-          <p>{warden?.address}</p>
+          <p>{warden?.hostel?.location ?? ""}</p>
         </div>
         <div className={styles.detail}>
           <h5>Type:</h5>
-          <p>{warden?.type}</p>
+          <p>{warden?.hostel?.type ?? ""}</p>
         </div>
         <div className={styles.detail}>
           <h5>Total Rooms:</h5>
-          <p>{warden?.totalRooms}</p>
+          <p>{warden?.hostel?.rooms?.length ?? 0}</p>
         </div>
 
-        <div className={styles.imagesContainer}>
-          <h4 className={styles.imagesTitle}>Images</h4>
-          <div className={styles.imagesGroup}>
-            <img src={bedroom} alt="bedroom" />
-            <img src={bedroom} alt="bedroom" />
-            <img src={bedroom} alt="bedroom" />
-            <img src={bedroom} alt="bedroom" />
+        {warden?.hostel?.images && (
+          <div className={styles.imagesContainer}>
+            <h4 className={styles.imagesTitle}>Images</h4>
+            <div className={styles.imagesGroup}>
+              {warden?.hostel?.images.map((imageURL: string, index: number) => {
+                return <img src={imageURL} alt={`hostel-${index}`} />;
+              })}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       <h3 className={styles.tableTitle}>Room Details</h3>
 
-      <DetailsTable tableData={hostelDetailsTableData} />
+      {warden?.hostel?.rooms && (
+        <DetailsTable tableData={warden?.hostel?.rooms} />
+      )}
       <div className={styles.description}>
-        <h2>{hostelDetailsDescriptionData.title}</h2>
-        {hostelDetailsDescriptionData.description.map((data, index) => (
-          <p key={index}>{data}</p>
-        ))}
+        <h2>Description</h2>
+        <p>{warden?.hostel?.description}</p>
       </div>
     </div>
   );
