@@ -35,7 +35,7 @@ function App() {
     <div className="app-container">
       {authUser && <Sidebar />}
       <div className="main-content-container">
-        {authUser && <Header />}
+        {authUser && <Header authUser={authUser} />}
         <div
           className={
             location.pathname !== "/login" && location.pathname !== "/register"
