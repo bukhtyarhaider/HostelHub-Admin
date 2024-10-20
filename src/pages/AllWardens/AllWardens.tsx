@@ -315,8 +315,11 @@ const AllWardens = () => {
     },
     {
       title: "Created Date",
-      dataIndex: "createdAt",
       key: "createdAt",
+      render: (_text, record) =>
+        record.createdAt?.toDate
+          ? record.createdAt.toDate().toLocaleDateString()
+          : "N/A",
     },
     {
       title: "Action",
