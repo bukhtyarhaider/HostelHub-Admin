@@ -1,5 +1,4 @@
 import { avatar } from "../../assets";
-import { adminDetails } from "../../content";
 import { MenuOutlined } from "@ant-design/icons"; // Import the Menu icon
 import { useState } from "react";
 import { Drawer, Modal } from "antd";
@@ -8,8 +7,9 @@ import styles from "./Header.module.scss";
 import { home, logo, logoutIcon, profileIcon, wardensIcon } from "../../assets";
 import { ReactSVG } from "react-svg";
 import { signOutUser } from "../../services/firebase";
+import { HeaderProps } from "./HeaderProps";
 
-const Header = () => {
+const Header: React.FC<HeaderProps> = ({ authUser }) => {
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -78,8 +78,8 @@ const Header = () => {
         <MenuOutlined className={styles.menuIcon} onClick={toggleDrawer} />
         <div className={styles.leftSide}></div>
         <div className={styles.profile}>
-          <img src={avatar} alt="Admin Avatar" />
-          <h6>{adminDetails.fullName}</h6>
+          <img src={authUser?.photoURL || avatar} alt="User Avatar" />
+          <h6>{authUser?.displayName || "Admin"}</h6>
         </div>
       </div>
 

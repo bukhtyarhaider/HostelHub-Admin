@@ -446,7 +446,12 @@ const AllWardens = () => {
     },
   ];
 
-  const DocumentDetail = ({ title, link }) => (
+  interface DocumentDetailProps {
+    title: string;
+    link: string;
+  }
+
+  const DocumentDetail: React.FC<DocumentDetailProps> = ({ title, link }) => (
     <div className="detail">
       <p>{title}</p>
       <a href={link} target="_blank" rel="noopener noreferrer">
