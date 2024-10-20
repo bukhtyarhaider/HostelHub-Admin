@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore";
+
 export interface UpdateProfileParams {
   fullName: string;
   phoneNumber: string;
@@ -46,7 +48,7 @@ export interface Warden {
   phoneNumber: string;
   hostel: Hostel;
   status: string;
-  createdAt: string;
+  createdAt: Timestamp;
   photoURL?: string;
   currentAddress?: string;
   currentState?: string;
