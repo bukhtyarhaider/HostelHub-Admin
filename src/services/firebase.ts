@@ -160,7 +160,7 @@ export const _updatePassword = async (newPassword: string) => {
 
 export const getWardens = async (): Promise<Warden[]> => {
   try {
-    const wardenCollectionRef = collection(db, "wardan");
+    const wardenCollectionRef = collection(db, "warden");
     const snapshot = await getDocs(wardenCollectionRef);
 
     const wardenRecords: any[] = [];
@@ -184,7 +184,7 @@ export const updateWardenStatus = async (
   newStatus: string
 ): Promise<string> => {
   try {
-    const wardenDocRef = doc(db, "wardan", docId);
+    const wardenDocRef = doc(db, "warden", docId);
     await updateDoc(wardenDocRef, {
       status: newStatus,
     });

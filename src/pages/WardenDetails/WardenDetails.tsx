@@ -6,8 +6,6 @@ const WardenDetails = () => {
   const location = useLocation();
   const { warden } = location.state || {};
 
-  console.log(warden);
-
   return (
     <div className={styles.wardenDetailsContainer}>
       <h3 className={styles.title}>Warden Details</h3>

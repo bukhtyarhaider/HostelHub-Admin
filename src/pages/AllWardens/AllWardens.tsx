@@ -1,5 +1,5 @@
-import { useState, useEffect, SetStateAction } from "react";
-import { Tabs, Table, Modal, message } from "antd";
+import { useState, useEffect, SetStateAction, Key } from "react";
+import { Tabs, Table, Modal, message, Button } from "antd";
 import styles from "./AllWardens.module.scss";
 import { deleteIcon, syncIcon, viewIcon } from "../../assets";
 import { NavigateFunction, useNavigate } from "react-router-dom";
@@ -18,7 +18,7 @@ const AllWardens = () => {
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [isReactivateModalVisible, setIsReactivateModalVisible] =
     useState(false);
-  const [wardan, setWardan] = useState<Warden[]>([]);
+  const [warden, setWarden] = useState<Warden[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -26,7 +26,7 @@ const AllWardens = () => {
       setIsLoading(true);
       try {
         const records = await getWardens();
-        setWardan(records);
+        setWarden(records);
       } catch (err) {
         message.error(
           err instanceof Error ? err.message : "An unknown error occurred"
@@ -51,16 +51,16 @@ const AllWardens = () => {
     DELETED = "deleted",
   }
 
-  const newRequests = wardan.filter(
+  const newRequests = warden.filter(
     (warden) => warden.status === WardenStatus.NEW
   );
-  const activeAccounts = wardan.filter(
+  const activeAccounts = warden.filter(
     (warden) => warden.status === WardenStatus.ACTIVE
   );
-  const bannedAccounts = wardan.filter(
+  const bannedAccounts = warden.filter(
     (warden) => warden.status === WardenStatus.BANNED
   );
-  const rejectedRequests = wardan.filter(
+  const rejectedRequests = warden.filter(
     (warden) => warden.status === WardenStatus.REJECTED
   );
 
@@ -81,7 +81,7 @@ const AllWardens = () => {
         data = rejectedRequests;
         break;
       default:
-        data = wardan;
+        data = warden;
     }
 
     // If there's a search term, filter the data
@@ -148,11 +148,6 @@ const AllWardens = () => {
     setIsDeleteModalVisible(false);
   };
 
-  const handleDeleteConfirm = () => {
-    console.log(selectedWarden?.hostel.type, "Deleted");
-    setIsDeleteModalVisible(false);
-  };
-
   const showReactivateModal = (warden: Warden) => {
     if (warden) setSelectedWarden(warden);
     setIsReactivateModalVisible(true);
@@ -168,13 +163,13 @@ const AllWardens = () => {
       try {
         await updateWardenStatus(selectedWarden.id, WardenStatus.BANNED);
         message.success("Account is successfully banned");
-        const updatedWardan = wardan.map((warden) =>
+        const updatedWarden = warden.map((warden) =>
           warden.id === selectedWarden.id
             ? { ...warden, status: WardenStatus.BANNED }
             : warden
         );
-        setWardan(updatedWardan);
-        setFilteredData(updatedWardan);
+        setWarden(updatedWarden);
+        setFilteredData(updatedWarden);
       } catch (error) {
         message.error(
           error instanceof Error
@@ -195,13 +190,13 @@ const AllWardens = () => {
         await updateWardenStatus(selectedWarden.id, WardenStatus.ACTIVE);
         message.success("Account is successfully reactivated");
 
-        const updatedWardan = wardan.map((warden) =>
+        const updatedWarden = warden.map((warden) =>
           warden.id === selectedWarden.id
             ? { ...warden, status: WardenStatus.ACTIVE }
             : warden
         );
-        setWardan(updatedWardan);
-        setFilteredData(updatedWardan);
+        setWarden(updatedWarden);
+        setFilteredData(updatedWarden);
       } catch (error) {
         message.error(
           error instanceof Error
@@ -222,13 +217,13 @@ const AllWardens = () => {
         await updateWardenStatus(selectedWarden.id, WardenStatus.ACTIVE);
         message.success("Account is successfully approved");
 
-        const updatedWardan = wardan.map((warden) =>
+        const updatedWarden = warden.map((warden) =>
           warden.id === selectedWarden.id
             ? { ...warden, status: WardenStatus.ACTIVE }
             : warden
         );
-        setWardan(updatedWardan);
-        setFilteredData(updatedWardan);
+        setWarden(updatedWarden);
+        setFilteredData(updatedWarden);
       } catch (error) {
         message.error(
           error instanceof Error
@@ -249,13 +244,13 @@ const AllWardens = () => {
         await updateWardenStatus(selectedWarden.id, WardenStatus.REJECTED);
         message.success("Account is successfully rejected");
 
-        const updatedWardan = wardan.map((warden) =>
+        const updatedWarden = warden.map((warden) =>
           warden.id === selectedWarden.id
             ? { ...warden, status: WardenStatus.REJECTED }
             : warden
         );
-        setWardan(updatedWardan);
-        setFilteredData(updatedWardan);
+        setWarden(updatedWarden);
+        setFilteredData(updatedWarden);
       } catch (error) {
         message.error(
           error instanceof Error
@@ -276,13 +271,13 @@ const AllWardens = () => {
         await updateWardenStatus(selectedWarden.id, WardenStatus.DELETED);
         message.success("Account is successfully deleted");
 
-        const updatedWardan = wardan.map((warden) =>
+        const updatedWarden = warden.map((warden) =>
           warden.id === selectedWarden.id
             ? { ...warden, status: WardenStatus.DELETED }
             : warden
         );
-        setWardan(updatedWardan);
-        setFilteredData(updatedWardan);
+        setWarden(updatedWarden);
+        setFilteredData(updatedWarden);
       } catch (error) {
         message.error(
           error instanceof Error
@@ -451,6 +446,15 @@ const AllWardens = () => {
     },
   ];
 
+  const DocumentDetail = ({ title, link }) => (
+    <div className="detail">
+      <p>{title}</p>
+      <a href={link} target="_blank" rel="noopener noreferrer">
+        <button className="primary">Download</button>
+      </a>
+    </div>
+  );
+
   return (
     <div className={styles.allWardensContainer}>
       {/* Search Bar */}
@@ -512,6 +516,22 @@ const AllWardens = () => {
                 <h5>Total Rooms:</h5>
                 <p>{selectedWarden?.hostel.rooms?.length}</p>
               </div>
+            </div>
+
+            <div className="card">
+              <h4 className="cardTitle">Warden Documents</h4>
+              {selectedWarden?.cnic && (
+                <div>
+                  <DocumentDetail
+                    title="CNIC Front Side"
+                    link={selectedWarden.cnic.front}
+                  />
+                  <DocumentDetail
+                    title="CNIC Back Side"
+                    link={selectedWarden.cnic.back}
+                  />
+                </div>
+              )}
             </div>
           </div>
           <div className="buttonsGroup">
