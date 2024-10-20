@@ -18,7 +18,12 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
-import { UpdateProfileParams, UserProfile, Warden } from "../types/types";
+import {
+  Hostel,
+  UpdateProfileParams,
+  UserProfile,
+  Warden,
+} from "../types/types";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
 const firebaseConfig = {
@@ -160,13 +165,61 @@ export const _updatePassword = async (newPassword: string) => {
 
 export const getWardens = async (): Promise<Warden[]> => {
   try {
-    const wardenCollectionRef = collection(db, "warden");
+    const wardenCollectionRef = collection(db, "wardens");
     const snapshot = await getDocs(wardenCollectionRef);
 
-    const wardenRecords: any[] = [];
-    snapshot.forEach((doc) => {
-      wardenRecords.push({ id: doc.id, ...doc.data() });
-    });
+    const wardenRecords: Warden[] = [];
+    for (const document of snapshot.docs) {
+      const data = document.data();
+      const hostelRef = doc(db, "hostels", data.hostelId);
+      const hostelSnap = await getDoc(hostelRef);
+
+      let hostelData: Hostel | null = null;
+      if (hostelSnap.exists()) {
+        const hostelInfo = hostelSnap.data(); // Correctly access data from snapshot
+        const roomsRef = collection(hostelRef, "rooms");
+        const roomsSnap = await getDocs(roomsRef);
+        const rooms = roomsSnap.docs.map((roomDoc) => {
+          const roomData = roomDoc.data(); // Correctly access data from snapshot
+          return {
+            roomNumber: roomDoc.id,
+            type: roomData.type,
+            numberOfBeds: roomData.numberOfBeds,
+            washroom: roomData.washroom,
+            seatsAvailable: roomData.seatsAvailable,
+            price: roomData.price,
+          };
+        });
+
+        hostelData = {
+          name: hostelInfo.name,
+          email: hostelInfo.email,
+          location: hostelInfo.location,
+          contactNumber: hostelInfo.contactNumber,
+          type: hostelInfo.type,
+          description: hostelInfo.description,
+          images: hostelInfo.images,
+          rooms: rooms,
+        };
+      }
+
+      const warden: Warden = {
+        key: data.key,
+        id: document.id,
+        wardenId: data.wardenId,
+        email: data.email,
+        cnic: data.cnic,
+        fullName: data.fullName,
+        phoneNumber: data.phoneNumber,
+        hostel: hostelData as Hostel,
+        status: data.status,
+        createdAt: data.createdAt,
+        photoURL: data.photoURL,
+        currentAddress: data.currentAddress,
+        currentState: data.currentState,
+      };
+      wardenRecords.push(warden);
+    }
 
     return wardenRecords;
   } catch (error) {
@@ -184,7 +237,7 @@ export const updateWardenStatus = async (
   newStatus: string
 ): Promise<string> => {
   try {
-    const wardenDocRef = doc(db, "warden", docId);
+    const wardenDocRef = doc(db, "wardens", docId);
     await updateDoc(wardenDocRef, {
       status: newStatus,
     });
