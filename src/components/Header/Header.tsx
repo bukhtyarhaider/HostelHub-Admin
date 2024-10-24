@@ -1,4 +1,3 @@
-import { avatar } from "../../assets";
 import { MenuOutlined } from "@ant-design/icons"; // Import the Menu icon
 import { useState } from "react";
 import { Drawer, Modal } from "antd";
@@ -78,7 +77,6 @@ const Header: React.FC<HeaderProps> = ({ authUser }) => {
         <MenuOutlined className={styles.menuIcon} onClick={toggleDrawer} />
         <div className={styles.leftSide}></div>
         <div className={styles.profile}>
-          {/* <img src={authUser?.photoURL || avatar} alt="User Avatar" /> */}
           {!!authUser?.photoURL ? (
             <img
               src={authUser.photoURL}
