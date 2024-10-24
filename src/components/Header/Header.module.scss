@@ -20,6 +20,20 @@
       height: 32px;
     }
 
+    .avatarPlaceholder{
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: #ededee;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: bold;
+      color: #979797;
+    }
+
     h6 {
       font-size: 16px;
       font-weight: 500;

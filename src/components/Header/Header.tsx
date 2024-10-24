@@ -78,7 +78,18 @@ const Header: React.FC<HeaderProps> = ({ authUser }) => {
         <MenuOutlined className={styles.menuIcon} onClick={toggleDrawer} />
         <div className={styles.leftSide}></div>
         <div className={styles.profile}>
-          <img src={authUser?.photoURL || avatar} alt="User Avatar" />
+          {/* <img src={authUser?.photoURL || avatar} alt="User Avatar" /> */}
+          {!!authUser?.photoURL ? (
+            <img
+              src={authUser.photoURL}
+              alt="Admin Profile"
+              className={styles.profilePicture}
+            />
+          ) : (
+            <div className={styles.avatarPlaceholder}>
+              {!!authUser?.displayName ? authUser?.displayName?.charAt(0) : "A"}
+            </div>
+          )}
           <h6>{authUser?.displayName || "Admin"}</h6>
         </div>
       </div>
