@@ -70,12 +70,12 @@ const DashBoard = () => {
     {
       title: "Hostel Name",
       key: "hostelName",
-      render: (_text, record) => record.hostel.name,
+      render: (_text, record) => record.hostel?.name ?? "",
     },
     {
       title: "Hostel Location",
       key: "hostelLocation",
-      render: (_text, record) => record.hostel.location,
+      render: (_text, record) => record.hostel?.location ?? "",
     },
     {
       title: "Created Date",
