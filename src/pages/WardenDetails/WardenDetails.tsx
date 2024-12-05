@@ -48,9 +48,11 @@ const WardenDetails = () => {
           <div className={styles.imagesContainer}>
             <h4 className={styles.imagesTitle}>Images</h4>
             <div className={styles.imagesGroup}>
-              {warden?.hostel?.images.map((imageURL: string, index: number) => {
-                return <img src={imageURL} alt={`hostel-${index}`} />;
-              })}
+              {warden?.hostel?.images?.map(
+                (imageURL: string, index: number) => {
+                  return <img src={imageURL} alt={`hostel-${index}`} />;
+                }
+              )}
             </div>
           </div>
         )}
@@ -59,11 +61,11 @@ const WardenDetails = () => {
       <h3 className={styles.tableTitle}>Room Details</h3>
 
       {warden?.hostel?.rooms && (
-        <DetailsTable tableData={warden?.hostel?.rooms} />
+        <DetailsTable tableData={warden?.hostel?.rooms ?? []} />
       )}
       <div className={styles.description}>
         <h2>Description</h2>
-        <p>{warden?.hostel?.description}</p>
+        <p>{warden?.hostel?.description ?? ""}</p>
       </div>
     </div>
   );

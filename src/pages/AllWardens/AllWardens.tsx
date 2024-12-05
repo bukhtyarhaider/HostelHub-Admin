@@ -52,16 +52,16 @@ const AllWardens = () => {
   }
 
   const newRequests = warden.filter(
-    (warden) => warden.status === WardenStatus.NEW
+    (warden) => warden?.status === WardenStatus.NEW
   );
   const activeAccounts = warden.filter(
-    (warden) => warden.status === WardenStatus.ACTIVE
+    (warden) => warden?.status === WardenStatus.ACTIVE
   );
   const bannedAccounts = warden.filter(
-    (warden) => warden.status === WardenStatus.BANNED
+    (warden) => warden?.status === WardenStatus.BANNED
   );
   const rejectedRequests = warden.filter(
-    (warden) => warden.status === WardenStatus.REJECTED
+    (warden) => warden?.status === WardenStatus.REJECTED
   );
 
   // Function to update filtered data based on active tab
@@ -88,11 +88,13 @@ const AllWardens = () => {
     if (searchTerm) {
       data = data.filter(
         (warden) =>
-          warden.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          warden.hostel.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          warden.hostel.location
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase())
+          warden?.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          warden?.hostel?.name
+            ?.toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          warden?.hostel?.location
+            ?.toLowerCase()
+            ?.includes(searchTerm.toLowerCase())
       );
     }
 
@@ -163,8 +165,8 @@ const AllWardens = () => {
       try {
         await updateWardenStatus(selectedWarden.id, WardenStatus.BANNED);
         message.success("Account is successfully banned");
-        const updatedWarden = warden.map((warden) =>
-          warden.id === selectedWarden.id
+        const updatedWarden = warden?.map((warden) =>
+          warden.id === selectedWarden?.id
             ? { ...warden, status: WardenStatus.BANNED }
             : warden
         );
@@ -191,7 +193,7 @@ const AllWardens = () => {
         message.success("Account is successfully reactivated");
 
         const updatedWarden = warden.map((warden) =>
-          warden.id === selectedWarden.id
+          warden.id === selectedWarden?.id
             ? { ...warden, status: WardenStatus.ACTIVE }
             : warden
         );
@@ -245,7 +247,7 @@ const AllWardens = () => {
         message.success("Account is successfully rejected");
 
         const updatedWarden = warden.map((warden) =>
-          warden.id === selectedWarden.id
+          warden.id === selectedWarden?.id
             ? { ...warden, status: WardenStatus.REJECTED }
             : warden
         );
@@ -306,19 +308,19 @@ const AllWardens = () => {
     {
       title: "Hostel Name",
       key: "hostelName",
-      render: (_text, record) => record.hostel.name,
+      render: (_text, record) => record?.hostel?.name ?? "",
     },
     {
       title: "Hostel Location",
       key: "hostelLocation",
-      render: (_text, record) => record.hostel.location,
+      render: (_text, record) => record?.hostel?.location ?? "",
     },
     {
       title: "Created Date",
       key: "createdAt",
       render: (_text, record) =>
         record.createdAt?.toDate
-          ? record.createdAt.toDate().toLocaleDateString()
+          ? record?.createdAt?.toDate().toLocaleDateString()
           : "N/A",
     },
     {
