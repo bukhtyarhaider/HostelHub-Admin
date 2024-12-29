@@ -1,25 +1,29 @@
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { useState } from "react";
 import { Modal } from "antd";
 import styles from "./Sidebar.module.scss";
 import { home, logo, logoutIcon, profileIcon, wardensIcon } from "../../assets";
 import { ReactSVG } from "react-svg";
+import { signOutUser } from "../../services/firebase";
 
 const Sidebar = () => {
-  const navigate = useNavigate();
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const showModal = () => {
     setIsModalVisible(true);
   };
 
-  const handleOk = () => {
-    // Clear authToken from localStorage
-    localStorage.removeItem("authToken");
-
-    // Close the modal and navigate to the login page
-    setIsModalVisible(false);
-    navigate("/login");
+  const signOut = async () => {
+    try {
+      await signOutUser();
+      setIsModalVisible(false);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("Error signing out:", error.message);
+      } else {
+        console.error("An unexpected error occurred:", error);
+      }
+    }
   };
 
   const handleCancel = () => {
@@ -86,7 +90,7 @@ const Sidebar = () => {
             <button onClick={handleCancel} className="primary">
               Cancel
             </button>
-            <button onClick={handleOk} className="info">
+            <button onClick={signOut} className="info">
               Yes, I'm sure
             </button>
           </div>

@@ -1,4 +1,5 @@
 @import "../../mixins";
+
 .allWardensContainer {
   padding: 20px;
   background-color: #f0f2f5;
@@ -16,7 +17,6 @@
     .searchInput {
       border: 1px solid #d0d5dd;
       padding: 10px 16px;
-      gap: 8px;
       border-radius: 4px;
       width: 320px;
     }
@@ -30,15 +30,44 @@
     margin-bottom: 20px;
   }
 
-  .searchSection {
-    margin-bottom: 20px;
-  }
-
   .tableSection {
     background-color: #fff;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .cardsContainer {
+    color: #002f34;
+    padding-top: 30px;
+    @include flex(row, start, center);
+    flex-wrap: wrap;
+    gap: 20px;
+
+    .card {
+      border: 1px solid #f0f1f3;
+      border-radius: 6px;
+      padding: 30px;
+      width: 100%;
+
+      .cardTitle {
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 26px;
+        padding-bottom: 30px;
+      }
+
+      .detail {
+        @include flex(row, space-between, center);
+        padding: 15px 0; // Increased padding for better spacing
+
+        p {
+          font-size: 16px; // Increased font size for better readability
+          font-weight: 600;
+          line-height: 24px;
+        }
+      }
+    }
   }
 }
 
@@ -67,17 +96,8 @@
 
 @media screen and (max-width: 767px) {
   .allWardensContainer {
-    padding: 20px;
-    background-color: #f0f2f5;
-  
-    .searchSection {
-      .searchInput {
-        border: 1px solid #d0d5dd;
-        padding: 10px 16px;
-        gap: 8px;
-        border-radius: 4px;
-        width: 200px;
-      }
+    .searchInput {
+      width: 200px;
     }
   }
 }

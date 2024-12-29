@@ -2,6 +2,8 @@ import { useState } from "react";
 import styles from "./Login.module.scss";
 import CustomInput from "../../../components/CustomInput/CustomInput";
 import { useNavigate } from "react-router-dom";
+import { signIn } from "../../../services/firebase";
+import { Loader } from "../../../components/Loader/Loader";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -10,6 +12,7 @@ const Login = () => {
     password: "",
   });
   const [errors, setErrors] = useState<any>({});
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -39,15 +42,24 @@ const Login = () => {
     return newErrors;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
     } else {
-      const authToken = "your-generated-auth-token";
-      localStorage.setItem("authToken", authToken);
-      navigate("/");
+      setIsLoading(true);
+      try {
+        await signIn(formData.email, formData.password);
+        setIsLoading(false);
+        navigate("/");
+      } catch (error: any) {
+        setErrors((prevErrors: any) => ({
+          ...prevErrors,
+          form: error.message,
+        }));
+        setIsLoading(false);
+      }
     }
   };
 
@@ -82,6 +94,7 @@ const Login = () => {
                 value={formData.password}
                 onChange={handleChange}
               />
+              {errors.form && <div className="error">{errors.form}</div>}
               {errors.password && (
                 <div className="error">{errors.password}</div>
               )}
@@ -95,6 +108,7 @@ const Login = () => {
           </div>
         </form>
       </div>
+      {<Loader hide={!isLoading} />}
     </div>
   );
 };
